@@ -10,9 +10,9 @@ public interface IStockMarketEngine {
   /**
    * Places an order in the stock market.
    *
-   * @param order      The order to place (limit or market).
+   * @param order       The order to place (limit or market).
    * @param stockSymbol The symbol of the stock for which the order is placed.
-   * @param clientId   The ID of the client placing the order.
+   * @param clientId    The ID of the client placing the order.
    * @return A list of executed trades as a result of the order placement.
    */
   List<Trade> placeOrder(Order order, String stockSymbol, String clientId);
@@ -20,7 +20,7 @@ public interface IStockMarketEngine {
   /**
    * Cancels an existing order.
    *
-   * @param orderId    The ID of the order to cancel.
+   * @param orderId     The ID of the order to cancel.
    * @param stockSymbol The symbol of the stock for which the order is canceled.
    */
   void cancelOrder(int orderId, String stockSymbol);
@@ -28,7 +28,8 @@ public interface IStockMarketEngine {
   /**
    * Gets a snapshot of the current state of the order book.
    *
-   * @param stockSymbol The symbol of the stock for which the order book snapshot is requested.
+   * @param stockSymbol The symbol of the stock for which the order book snapshot
+   *                    is requested.
    * @return A string representation of the order book.
    */
   String getOrderBookSnapshot(String stockSymbol);
