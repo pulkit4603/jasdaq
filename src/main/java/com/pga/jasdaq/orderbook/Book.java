@@ -20,7 +20,7 @@ class Book implements IBook {
 
   Limit highestBuy;
   Limit lowestSell;
-  private int currentPrice = -1; // Initialize currentPrice
+  private int currentPrice = 0; // Initialize currentPrice
 
   public void addOrder(Order order) {
     long startTime = System.nanoTime();

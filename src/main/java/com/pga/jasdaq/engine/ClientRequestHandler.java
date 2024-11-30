@@ -65,6 +65,18 @@ public class ClientRequestHandler {
   }
 
   /**
+   * Endpoint to get the current price of the last executed trade for a given stock symbol.
+   *
+   * @param priceRequest The price request details submitted by the client.
+   * @return The current price of the stock.
+   */
+  @PostMapping("/price")
+  public int getCurrentPrice(@RequestBody PriceRequest priceRequest) {
+    String stockSymbol = priceRequest.getStockSymbol();
+    return stockMarketEngine.getCurrentPrice(stockSymbol);
+  }
+
+  /**
    * Endpoint to return a hello world message.
    *
    * @return A simple "Hello, World!" message.
@@ -129,6 +141,19 @@ public class ClientRequestHandler {
   }
 
   public static class SnapshotRequest {
+    private String stockSymbol;
+
+    // Getters and setters
+    public String getStockSymbol() {
+      return stockSymbol;
+    }
+
+    public void setStockSymbol(String stockSymbol) {
+      this.stockSymbol = stockSymbol;
+    }
+  }
+
+  public static class PriceRequest {
     private String stockSymbol;
 
     // Getters and setters
