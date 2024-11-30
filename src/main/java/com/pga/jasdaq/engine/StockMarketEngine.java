@@ -5,10 +5,10 @@ import com.pga.jasdaq.matchingengine.MatchingEngine;
 import com.pga.jasdaq.orderbook.IBook;
 import com.pga.jasdaq.orderbook.Order;
 import com.pga.jasdaq.orderbook.Trade;
+import com.pga.jasdaq.utils.WebSocketHandler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.springframework.stereotype.Service;
 
@@ -16,11 +16,13 @@ import org.springframework.stereotype.Service;
 public class StockMarketEngine implements IStockMarketEngine {
 
   private final Map<String, IMatchingEngine> matchingEngines;
-  private final IBook orderBook; // Assuming you have a way to create an IBook instance
+  private final IBook orderBook;
+  private final WebSocketHandler webSocketHandler;
 
-  public StockMarketEngine(Map<String, IMatchingEngine> matchingEngines, IBook orderBook) {
+  public StockMarketEngine(Map<String, IMatchingEngine> matchingEngines, IBook orderBook, WebSocketHandler webSocketHandler) {
     this.matchingEngines = matchingEngines;
     this.orderBook = orderBook;
+    this.webSocketHandler = webSocketHandler;
 
     // Initialize the map with empty engines for the specified stock symbols
     initializeMatchingEngines();
@@ -52,6 +54,11 @@ public class StockMarketEngine implements IStockMarketEngine {
     // Log trades executed or notify another component as necessary
     System.out.println("Trades executed for client " + clientId + " for stock " + stockSymbol + ": " + tradesExecuted);
 
+    // Broadcast each trade to WebSocket clients
+    for (Trade trade : tradesExecuted) {
+      webSocketHandler.sendToBroadcast(stockSymbol, trade.getTradePrice());
+    }
+
     return tradesExecuted;
   }
 
@@ -74,5 +81,15 @@ public class StockMarketEngine implements IStockMarketEngine {
     }
 
     return matchingEngine.getOrderBookSnapshot();
+  }
+
+  @Override
+  public int getCurrentPrice(String stockSymbol) {
+    IMatchingEngine matchingEngine = matchingEngines.get(stockSymbol);
+    if (matchingEngine == null) {
+      throw new IllegalArgumentException("No matching engine found for stock: " + stockSymbol);
+    }
+
+    return matchingEngine.getCurrentPrice();
   }
 }

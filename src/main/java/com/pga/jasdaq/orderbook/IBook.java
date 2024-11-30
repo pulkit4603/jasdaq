@@ -5,7 +5,7 @@ import java.util.List;
 public interface IBook {
 
   /**
-   * removes an order in the book.
+   * Removes an order in the book.
    *
    * @param orderId The ID of the order to cancel.
    */
@@ -16,15 +16,17 @@ public interface IBook {
    * book.
    *
    * @param incomingOrder The incoming order to match.
+   * @return List of trades executed as a result of the order placement.
    */
-  List<Trade> placeLimitOrder(Order incomingOrder); // returns trades list
+  List<Trade> placeLimitOrder(Order incomingOrder);
 
   /**
    * Places a market order and matches it against the book.
    *
    * @param marketOrder The market order to place.
+   * @return List of trades executed as a result of the market order placement.
    */
-  List<Trade> placeMarketOrder(Order marketOrder); // returns trades list
+  List<Trade> placeMarketOrder(Order marketOrder);
 
   /**
    * Retrieves the current best bid price in the book.
@@ -61,4 +63,11 @@ public interface IBook {
    * @return A string representation of the order book.
    */
   String getOrderBookSnapshot();
+
+  /**
+   * Retrieves the current price of the last executed trade.
+   *
+   * @return The current price, or -1 if no trades have been executed.
+   */
+  int getCurrentPrice();
 }

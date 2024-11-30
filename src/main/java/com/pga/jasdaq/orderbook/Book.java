@@ -20,6 +20,7 @@ class Book implements IBook {
 
   Limit highestBuy;
   Limit lowestSell;
+  private int currentPrice = -1; // Initialize currentPrice
 
   public void addOrder(Order order) {
     long startTime = System.nanoTime();
@@ -98,6 +99,7 @@ class Book implements IBook {
         incomingOrder.shares -= sharesToMatch;
 
         tradesExecuted.add(new Trade(incomingOrder.idNumber, sellOrderId, sharesToMatch, sellOrderPrice));
+        currentPrice = sellOrderPrice;
       }
     } else {
       // Match sell order against buy limits
@@ -119,6 +121,7 @@ class Book implements IBook {
         incomingOrder.shares -= sharesToMatch;
 
         tradesExecuted.add(new Trade(buyOrderId, incomingOrder.idNumber, sharesToMatch, buyOrderPrice));
+        currentPrice = buyOrderPrice;
       }
     }
 
@@ -155,6 +158,7 @@ class Book implements IBook {
         marketOrder.shares -= sharesToMatch;
 
         tradesExecuted.add(new Trade(marketOrder.idNumber, sellOrderId, sharesToMatch, sellOrderPrice));
+        currentPrice = sellOrderPrice;
       }
     } else {
       // Sell market order: Match against the highest buy prices
@@ -167,11 +171,12 @@ class Book implements IBook {
         int sharesToMatch = Math.min(marketOrder.shares, buyOrder.shares);
 
         // Execute the trade
-        executeOrder(buyOrder.idNumber, sharesToMatch);
+        executeOrder(buyOrderId, sharesToMatch);
 
         marketOrder.shares -= sharesToMatch;
 
         tradesExecuted.add(new Trade(buyOrderId, marketOrder.idNumber, sharesToMatch, buyOrderPrice));
+        currentPrice = buyOrderPrice;
       }
     }
 
@@ -236,5 +241,9 @@ class Book implements IBook {
     sellLimits
         .forEach((price, limit) -> snapshot.append(String.format("Price: %d, Volume: %d\n", price, limit.totalVolume)));
     return snapshot.toString();
+  }
+
+  public int getCurrentPrice() {
+    return currentPrice;
   }
 }

@@ -62,4 +62,18 @@ public interface IMatchingEngine {
    * @return String representation of the order book.
    */
   String getOrderBookSnapshot();
+
+  /**
+   * Retrieves the current price of the last executed trade.
+   *
+   * @return The current price, or -1 if no trades have been executed.
+   */
+  int getCurrentPrice();
+
+  /**
+   * Returns the trade history stored locally in the matching engine.
+   *
+   * @return List of trades executed so far.
+   */
+  List<Trade> getTradeHistory();
 }

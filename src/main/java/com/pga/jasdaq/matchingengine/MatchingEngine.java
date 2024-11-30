@@ -98,6 +98,16 @@ public class MatchingEngine implements IMatchingEngine {
   }
 
   /**
+   * Retrieves the current price of the last executed trade.
+   *
+   * @return The current price, or -1 if no trades have been executed.
+   */
+  @Override
+  public int getCurrentPrice() {
+    return orderBook.getCurrentPrice();
+  }
+
+  /**
    * Handles the trades executed during an order placement.
    * Updates the trade history and the last traded price.
    *
@@ -127,6 +137,7 @@ public class MatchingEngine implements IMatchingEngine {
    *
    * @return List of trades executed so far.
    */
+  @Override
   public List<Trade> getTradeHistory() {
     return new ArrayList<>(tradeHistory); // Return a copy of the trade history
   }

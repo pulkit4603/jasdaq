@@ -33,4 +33,12 @@ public interface IStockMarketEngine {
    * @return A string representation of the order book.
    */
   String getOrderBookSnapshot(String stockSymbol);
+
+  /**
+   * Retrieves the current price of the last executed trade for a given stock symbol.
+   *
+   * @param stockSymbol The symbol of the stock.
+   * @return The current price, or -1 if no trades have been executed.
+   */
+  int getCurrentPrice(String stockSymbol);
 }
