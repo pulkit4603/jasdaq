@@ -1,5 +1,6 @@
 package com.pga.jasdaq.engine;
 
+import com.pga.jasdaq.db.service.TradeService;
 import com.pga.jasdaq.matchingengine.IMatchingEngine;
 import com.pga.jasdaq.matchingengine.MatchingEngine;
 import com.pga.jasdaq.orderbook.IBook;
@@ -10,20 +11,26 @@ import com.pga.jasdaq.utils.WebSocketHandler;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StockMarketEngine implements IStockMarketEngine {
 
+  private static final Logger logger = LoggerFactory.getLogger(StockMarketEngine.class);
+  
   private final Map<String, IMatchingEngine> matchingEngines;
   private final IBook orderBook;
   private final WebSocketHandler webSocketHandler;
+  private final TradeService tradeService;
 
   public StockMarketEngine(Map<String, IMatchingEngine> matchingEngines, IBook orderBook,
-      WebSocketHandler webSocketHandler) {
+      WebSocketHandler webSocketHandler, TradeService tradeService) {
     this.matchingEngines = matchingEngines;
     this.orderBook = orderBook;
     this.webSocketHandler = webSocketHandler;
+    this.tradeService = tradeService;
 
     // Initialize the map with empty engines for the specified stock symbols
     initializeMatchingEngines();
@@ -39,7 +46,7 @@ public class StockMarketEngine implements IStockMarketEngine {
   @Override
   public List<Trade> placeOrder(Order order, String stockSymbol, String clientId) {
     IMatchingEngine matchingEngine = matchingEngines.get(stockSymbol);
-    System.out.println("In placeOrder in matchingEngine, stockSymbol: " + stockSymbol);
+    logger.info("In placeOrder in matchingEngine, stockSymbol: {}", stockSymbol);
     if (matchingEngine == null) {
       throw new IllegalArgumentException("No matching engine found for stock: " + stockSymbol);
     }
@@ -54,10 +61,18 @@ public class StockMarketEngine implements IStockMarketEngine {
     }
 
     // Log trades executed or notify another component as necessary
-    System.out.println("Trades executed for client " + clientId + " for stock " + stockSymbol + ": " + tradesExecuted);
+    logger.info("Trades executed for client {} for stock {}: {}", clientId, stockSymbol, tradesExecuted);
 
-    // Broadcast each trade to WebSocket clients
+    // Store trades in the database
     for (Trade trade : tradesExecuted) {
+      // Save trade to database (isBuy reflects whether the original order was a buy)
+      try {
+        tradeService.saveTrade(trade, stockSymbol, order.isBuy());
+      } catch (Exception e) {
+        logger.error("Failed to save trade to database: {}", e.getMessage(), e);
+      }
+      
+      // Broadcast each trade to WebSocket clients
       webSocketHandler.sendToBroadcast(stockSymbol, trade.getTradePrice());
     }
 
@@ -72,7 +87,7 @@ public class StockMarketEngine implements IStockMarketEngine {
     }
 
     matchingEngine.cancelOrder(orderId);
-    System.out.println("Order " + orderId + " canceled for stock " + stockSymbol + ".");
+    logger.info("Order {} canceled for stock {}.", orderId, stockSymbol);
   }
 
   @Override
