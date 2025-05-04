@@ -464,37 +464,49 @@ public class TradeService {
     
     /**
      * Log benchmark results to a CSV file.
+     * Results are appended to the same file for easier data analysis across multiple runs.
      */
     private void logBenchmarkResultsToCSV(Map<String, Object> results) throws IOException {
         String timestamp = LocalDateTime.now().format(DATE_FORMATTER);
-        String fileName = "benchmark-reports/db_benchmark_" + timestamp + ".csv";
+        String fileName = "benchmark-reports/db_benchmark_results.csv";
         
         // Ensure directory exists
         new java.io.File("benchmark-reports").mkdirs();
         
-        try (FileWriter writer = new FileWriter(fileName)) {
-            writer.write("Benchmark,SingleColumnIndex,CompositeIndex\n");
+        // Check if file exists to write header only when creating a new file
+        boolean fileExists = new java.io.File(fileName).exists();
+        
+        @SuppressWarnings("unchecked")
+        Map<String, Long> singleColumnResults = (Map<String, Long>) results.get("singleColumnIndex");
+        
+        @SuppressWarnings("unchecked")
+        Map<String, Long> compositeIndexResults = (Map<String, Long>) results.get("compositeIndex");
+        
+        // Operations to include in the report
+        String[] operations = {
+            "getLastTrades", 
+            "getAveragePrice", 
+            "countTrades", 
+            "getMinMaxPrice", 
+            "topSymbolsByVolume", 
+            "insertBatchTrades",
+            "getTradesBySymbolOnly"
+        };
+        
+        try (FileWriter writer = new FileWriter(fileName, true)) {
+            // Write header row if file doesn't exist
+            if (!fileExists) {
+                writer.write("timestamp,tradeCount,operation,singleColumnIndex_ms,compositeIndex_ms\n");
+            }
             
-            @SuppressWarnings("unchecked")
-            Map<String, Long> singleColumnResults = (Map<String, Long>) results.get("singleColumnIndex");
-            
-            @SuppressWarnings("unchecked")
-            Map<String, Long> compositeIndexResults = (Map<String, Long>) results.get("compositeIndex");
-            
-            // Ensure all metrics are included in the CSV
-            String[] operations = {
-                "getLastTrades", 
-                "getAveragePrice", 
-                "countTrades", 
-                "getMinMaxPrice", 
-                "topSymbolsByVolume", 
-                "insertBatchTrades",
-                "getTradesBySymbolOnly"
-            };
+            // Write each operation as a separate row (better for data analysis)
+            int tradeCount = (Integer) results.get("tradeCount");
             
             for (String operation : operations) {
                 if (singleColumnResults.containsKey(operation) && compositeIndexResults.containsKey(operation)) {
-                    writer.write(String.format("%s,%d,%d\n", 
+                    writer.write(String.format("%s,%d,%s,%d,%d\n", 
+                        timestamp,
+                        tradeCount,
                         operation, 
                         singleColumnResults.get(operation),
                         compositeIndexResults.get(operation)));
@@ -502,7 +514,7 @@ public class TradeService {
             }
         }
         
-        logger.info("Benchmark results written to {}", fileName);
+        logger.info("Benchmark results appended to {}", fileName);
     }
     
     /**
