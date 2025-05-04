@@ -42,6 +42,11 @@
       <artifactId>spring-boot-starter-websocket</artifactId>
       <version>3.4.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -62,6 +67,18 @@
       <groupId>org.springframework.integration</groupId>
       <artifactId>spring-integration-ip</artifactId>
       <version>6.4.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-core</artifactId>
+      <version>1.37</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjdk.jmh</groupId>
+      <artifactId>jmh-generator-annprocess</artifactId>
+      <version>1.37</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

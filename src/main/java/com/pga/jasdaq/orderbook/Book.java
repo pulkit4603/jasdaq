@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import org.springframework.stereotype.Service;
 
 @Service
-class Book implements IBook {
+public class Book implements IBook {
   // Store all orders by ID for quick access
   Map<Integer, Order> orders = new HashMap<>();
 

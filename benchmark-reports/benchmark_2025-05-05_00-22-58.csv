@@ -1,0 +1,10 @@
+Metric,Value
+MarketOpen_Throughput_ops_sec,30303.030303030304
+FlashCrash_Duration_ms,184
+MarketOpen_OrderCount,10000
+FlashCrash_Throughput_ops_sec,36496.3503649635
+HFT_OrderCount,293649
+FlashCrash_OrderCount,5000
+HFT_Duration_ms,3002
+HFT_Throughput_ops_sec,97883.0
+MarketOpen_Duration_ms,335

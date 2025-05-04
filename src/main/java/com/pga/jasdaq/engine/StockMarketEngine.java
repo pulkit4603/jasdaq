@@ -19,7 +19,8 @@ public class StockMarketEngine implements IStockMarketEngine {
   private final IBook orderBook;
   private final WebSocketHandler webSocketHandler;
 
-  public StockMarketEngine(Map<String, IMatchingEngine> matchingEngines, IBook orderBook, WebSocketHandler webSocketHandler) {
+  public StockMarketEngine(Map<String, IMatchingEngine> matchingEngines, IBook orderBook,
+      WebSocketHandler webSocketHandler) {
     this.matchingEngines = matchingEngines;
     this.orderBook = orderBook;
     this.webSocketHandler = webSocketHandler;
@@ -38,6 +39,7 @@ public class StockMarketEngine implements IStockMarketEngine {
   @Override
   public List<Trade> placeOrder(Order order, String stockSymbol, String clientId) {
     IMatchingEngine matchingEngine = matchingEngines.get(stockSymbol);
+    System.out.println("In placeOrder in matchingEngine, stockSymbol: " + stockSymbol);
     if (matchingEngine == null) {
       throw new IllegalArgumentException("No matching engine found for stock: " + stockSymbol);
     }

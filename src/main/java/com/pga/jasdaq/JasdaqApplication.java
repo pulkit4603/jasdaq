@@ -15,6 +15,6 @@ public class JasdaqApplication {
 
   @Bean
   public WebSocketHandler webSocketHandler() {
-      return new WebSocketHandler();
+    return new WebSocketHandler();
   }
 }
