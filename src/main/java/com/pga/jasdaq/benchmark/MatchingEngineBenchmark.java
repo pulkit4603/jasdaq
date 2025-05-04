@@ -5,12 +5,10 @@ import com.pga.jasdaq.matchingengine.MatchingEngine;
 import com.pga.jasdaq.orderbook.Book;
 import com.pga.jasdaq.orderbook.IBook;
 import com.pga.jasdaq.orderbook.Order;
-import com.pga.jasdaq.orderbook.Trade;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class MatchingEngineBenchmark {
 

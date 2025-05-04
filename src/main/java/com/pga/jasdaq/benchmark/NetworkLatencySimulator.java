@@ -2,7 +2,6 @@ package com.pga.jasdaq.benchmark;
 
 import com.pga.jasdaq.engine.ClientRequestHandler;
 import com.pga.jasdaq.orderbook.Order;
-import com.pga.jasdaq.orderbook.Trade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +96,7 @@ public class NetworkLatencySimulator {
             
             // Send request and measure response time
             long requestStart = System.currentTimeMillis();
-            List<Trade> trades = clientHandler.placeOrder(request);
+            // List<Trade> trades = clientHandler.placeOrder(request);
             long latency = System.currentTimeMillis() - requestStart;
             
             latencies.add(latency);
